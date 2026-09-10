@@ -1,0 +1,42 @@
+# Olist source data must stay outside version control.
+*.csv
+
+# Credentials and local environment files.
+.env
+.env.*
+*.password
+*.secret
+secrets/
+
+# Logs and temporary/editor files.
+*.log
+logs/
+tmp/
+*.tmp
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Java ORM classes generated locally by the six Sqoop imports.
+/orders.java
+/order_items.java
+/customers.java
+/products.java
+/sellers.java
+/category_translation.java
+
+# Local Derby/Hive metastore artifacts.
+metastore_db/
+derby.log
+.hive-staging*/
+hive-runtime/
+warehouse/
+
+# Hadoop/HDFS/YARN runtime data if accidentally created in the repository.
+hadoop-data/
+hadoop-runtime/
+hdfs-data/
+namenode/
+datanode/
+yarn-data/
