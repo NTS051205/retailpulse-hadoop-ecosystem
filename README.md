@@ -167,7 +167,8 @@ retailpulse-hadoop-ecosystem/
 |   `-- images/
 |       `-- retailpulse-batch-data-pipeline.png
 `-- results/
-    `-- README.md
+    |-- README.md
+    `-- hive_kpi_results_2026-10-21.md
 ```
 
 ## Manual execution order
@@ -383,6 +384,31 @@ Processed and analytical checks from the same run:
 - No retained fact row had status `canceled` or `unavailable`.
 - All four required source relationships had zero unmatched rows. Thirteen product rows with a non-null category had no translation match; the left join preserved their items.
 - All six Sqoop imports, the Pig transformation, the Hive table builds, and the ten KPI queries completed successfully.
+
+### Verified Hive KPI results — 21 October 2026
+
+The following results were produced by a successful local run of all ten queries in [`hive/03_kpi_queries.hql`](hive/03_kpi_queries.hql) using Hive 2.3.9 on Hadoop 2.10.2 (MapReduce execution engine). These are **observed results**, not hardcoded outputs or guaranteed results for other data loads.
+
+```bash
+hive --hiveconf hive.cli.print.header=true -f hive/03_kpi_queries.hql
+```
+
+| # | KPI / analysis | Verified result |
+|---:|---|---|
+| 1 | Total orders | 98,199 |
+| 2 | Total sales value (price + freight) | 15,735,527.03 |
+| 3 | Average order value | 160.24 |
+| 4 | Total freight cost | 2,241,126.29 |
+| 5 | Average delivery days | 12.09 days |
+| 6 | Late delivery rate | 8.11% |
+| 7 | Top product category by sales | `health_beauty` — 1,437,665.78 |
+| 8 | Top customer state by sales | `SP` — 5,878,132.06 |
+| 9 | Highest-sales purchase month | 2017-11 — 1,172,191.68 |
+| 10 | Top seller by sales | `4869f7a5dfa277a7dca6462dcf3b52b2` (guariba, SP) — 249,393.44 |
+
+**Interpretation:** Sales value is the sum of `price + freight_value` for retained order items, **not** net profit or recognized revenue. Order-level KPIs deduplicate `order_id`; delivery metrics consider eligible delivered orders. The customer-state result uses the customer's location, not the seller's.
+
+The detailed output of category, state, monthly, and seller queries is saved in [`results/hive_kpi_results_2026-10-21.md`](results/hive_kpi_results_2026-10-21.md). The full run took approximately 7.5 minutes on the tested machine. It is therefore recommended to execute the complete KPI script before a time-limited live presentation and demonstrate selected queries during the workshop.
 
 ## Known limitations
 
